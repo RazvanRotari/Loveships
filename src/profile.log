@@ -1,0 +1,1054 @@
+SCRIPT  /home/razvan/scripts/stop_profile.vim
+Sourced 1 time
+Total time:   0.000000
+ Self time:   0.000000
+
+count  total (s)   self (s)
+                            " At this point do slow actions
+                            profile pause
+
+FUNCTION  <SNR>104_OnCursorMovedNormalMode()
+Called 77 times
+Total time:   0.251383
+ Self time:   0.159780
+
+count  total (s)   self (s)
+   77   0.003182   0.000435   if !s:AllowedToCompleteInCurrentFile()
+                                return
+                              endif
+                            
+   77   0.089355   0.000498   call s:OnFileReadyToParse()
+   77              0.158543   py ycm_state.OnCursorMoved()
+
+FUNCTION  airline#check_mode()
+Called 178 times
+Total time:   4.241792
+ Self time:   0.027081
+
+count  total (s)   self (s)
+  178              0.001043   let context = s:contexts[a:winnr]
+                            
+  178              0.000689   if get(w:, 'airline_active', 1)
+  178              0.000608     let l:m = mode()
+  178              0.000431     if l:m ==# "i"
+                                  let l:mode = ['insert']
+                                elseif l:m ==# "R"
+                                  let l:mode = ['replace']
+                                elseif l:m =~# '\v(v|V||s|S|)'
+                                  let l:mode = ['visual']
+                                elseif l:m ==# "t"
+                                  let l:mode = ['terminal']
+                                else
+  178              0.000540       let l:mode = ['normal']
+  178              0.000199     endif
+  178              0.001161     let w:airline_current_mode = get(g:airline_mode_map, l:m, l:m)
+  178              0.000211   else
+                                let l:mode = ['inactive']
+                                let w:airline_current_mode = get(g:airline_mode_map, '__')
+                              endif
+                            
+  178              0.000681   if g:airline_detect_modified && &modified
+  178              0.001732     call add(l:mode, 'modified')
+  178              0.000214   endif
+                            
+  178              0.000461   if g:airline_detect_paste && &paste
+                                call add(l:mode, 'paste')
+                              endif
+                            
+  178              0.001565   if g:airline_detect_crypt && exists("+key") && !empty(&key)
+                                call add(l:mode, 'crypt')
+                              endif
+                            
+  178              0.000357   if &readonly || ! &modifiable
+                                call add(l:mode, 'readonly')
+                              endif
+                            
+  178              0.001098   let mode_string = join(l:mode)
+  178              0.001553   if get(w:, 'airline_lastmode', '') != mode_string || get(s:, 'airline_lastmode', []) != l:mode
+  178   0.017950   0.001497     call airline#highlighter#highlight_modified_inactive(context.bufnr)
+  178   4.199629   0.001371     call airline#highlighter#highlight(l:mode)
+  178              0.000708     let w:airline_lastmode = mode_string
+  178              0.000566     let s:airline_lastmode = l:mode
+  178              0.000166   endif
+                            
+  178              0.000219   return ''
+
+FUNCTION  airline#util#append()
+Called 712 times
+Total time:   0.010401
+ Self time:   0.010401
+
+count  total (s)   self (s)
+  712              0.002254   if a:minwidth > 0 && winwidth(0) < a:minwidth
+                                return ''
+                              endif
+  712              0.003155   let prefix = s:spc == "\ua0" ? s:spc : s:spc.s:spc
+  712              0.002840   return empty(a:text) ? '' : prefix.g:airline_left_alt_sep.s:spc.a:text
+
+FUNCTION  <SNR>104_OnFileReadyToParse()
+Called 77 times
+Total time:   0.088856
+ Self time:   0.004798
+
+count  total (s)   self (s)
+                              " We need to call this just in case there is no b:ycm_changetick; this can
+                              " happen for special buffers.
+   77   0.001036   0.000368   call s:SetUpYcmChangedTick()
+                            
+                              " Order is important here; we need to extract any done diagnostics before
+                              " reparsing the file again. If we sent the new parse request first, then
+                              " the response would always be pending when we called
+                              " UpdateDiagnosticNotifications.
+   77   0.083898   0.000507   call s:UpdateDiagnosticNotifications()
+                            
+   77              0.001667   let buffer_changed = b:changedtick != b:ycm_changedtick.file_ready_to_parse
+   77              0.000385   if buffer_changed
+                                py ycm_state.OnFileReadyToParse()
+                              endif
+   77              0.000704   let b:ycm_changedtick.file_ready_to_parse = b:changedtick
+
+FUNCTION  airline#themes#get_highlight()
+Called 11392 times
+Total time:   1.430731
+ Self time:   0.084020
+
+count  total (s)   self (s)
+11392   1.425467   0.078757   return call('airline#highlighter#get_highlight', [a:group] + a:000)
+
+FUNCTION  <SNR>96_exec_separator()
+Called 5696 times
+Total time:   1.910703
+ Self time:   0.234796
+
+count  total (s)   self (s)
+ 5696   0.759778   0.037304   let l:from = airline#themes#get_highlight(a:from.a:suffix)
+ 5696   0.743690   0.035433   let l:to = airline#themes#get_highlight(a:to.a:suffix)
+ 5696              0.024222   let group = a:from.'_to_'.a:to.a:suffix
+ 5696              0.008939   if a:inverse
+ 2848              0.018017     let colors = [ l:from[1], l:to[1], l:from[3], l:to[3] ]
+ 2848              0.003087   else
+ 2848              0.017836     let colors = [ l:to[1], l:from[1], l:to[3], l:from[3] ]
+ 2848              0.003048   endif
+ 5696              0.019115   let a:dict[group] = colors
+ 5696   0.278077   0.032900   call airline#highlighter#exec(group, colors)
+
+FUNCTION  airline#parts#filetype()
+Called 178 times
+Total time:   0.000523
+ Self time:   0.000523
+
+count  total (s)   self (s)
+  178              0.000425   return &filetype
+
+FUNCTION  airline#parts#iminsert()
+Called 178 times
+Total time:   0.001526
+ Self time:   0.001526
+
+count  total (s)   self (s)
+  178              0.000625   if g:airline_detect_iminsert && &iminsert && exists('b:keymap_name')
+                                return toupper(b:keymap_name)
+                              endif
+  178              0.000171   return ''
+
+FUNCTION  <SNR>63_Highlight_Matching_Pair()
+Called 77 times
+Total time:   0.006789
+ Self time:   0.006789
+
+count  total (s)   self (s)
+                              " Remove any previous match.
+   77              0.000487   if exists('w:paren_hl_on') && w:paren_hl_on
+    1              0.000019     silent! call matchdelete(3)
+    1              0.000013     let w:paren_hl_on = 0
+    1              0.000005   endif
+                            
+                              " Avoid that we remove the popup menu.
+                              " Return when there are no colors (looks like the cursor jumps).
+   77              0.000390   if pumvisible() || (&t_Co < 8 && !has("gui_running"))
+                                return
+                              endif
+                            
+                              " Get the character under the cursor and check if it's in 'matchpairs'.
+   77              0.000281   let c_lnum = line('.')
+   77              0.000234   let c_col = col('.')
+   77              0.000154   let before = 0
+                            
+   77              0.000309   let text = getline(c_lnum)
+   77              0.000337   let c = text[c_col - 1]
+   77              0.001835   let plist = split(&matchpairs, '.\zs[:,]')
+   77              0.000384   let i = index(plist, c)
+   77              0.000143   if i < 0
+                                " not found, in Insert mode try character before the cursor
+   77              0.000255     if c_col > 1 && (mode() == 'i' || mode() == 'R')
+                                  let before = 1
+                                  let c = text[c_col - 2]
+                                  let i = index(plist, c)
+                                endif
+   77              0.000106     if i < 0
+                                  " not found, nothing to do
+   77              0.000100       return
+                                endif
+                              endif
+                            
+                              " Figure out the arguments for searchpairpos().
+                              if i % 2 == 0
+                                let s_flags = 'nW'
+                                let c2 = plist[i + 1]
+                              else
+                                let s_flags = 'nbW'
+                                let c2 = c
+                                let c = plist[i - 1]
+                              endif
+                              if c == '['
+                                let c = '\['
+                                let c2 = '\]'
+                              endif
+                            
+                              " Find the match.  When it was just before the cursor move it there for a
+                              " moment.
+                              if before > 0
+                                let has_getcurpos = exists("*getcurpos")
+                                if has_getcurpos
+                                  " getcurpos() is more efficient but doesn't exist before 7.4.313.
+                                  let save_cursor = getcurpos()
+                                else
+                                  let save_cursor = winsaveview()
+                                endif
+                                call cursor(c_lnum, c_col - before)
+                              endif
+                            
+                              " Build an expression that detects whether the current cursor position is in
+                              " certain syntax types (string, comment, etc.), for use as searchpairpos()'s
+                              " skip argument.
+                              " We match "escape" for special items, such as lispEscapeSpecial.
+                              let s_skip = '!empty(filter(map(synstack(line("."), col(".")), ''synIDattr(v:val, "name")''), ' . '''v:val =~? "string\\|character\\|singlequote\\|escape\\|comment"''))'
+                              " If executing the expression determines that the cursor is currently in
+                              " one of the syntax types, then we want searchpairpos() to find the pair
+                              " within those syntax types (i.e., not skip).  Otherwise, the cursor is
+                              " outside of the syntax types and s_skip should keep its value so we skip any
+                              " matching pair inside the syntax types.
+                              execute 'if' s_skip '| let s_skip = 0 | endif'
+                            
+                              " Limit the search to lines visible in the window.
+                              let stoplinebottom = line('w$')
+                              let stoplinetop = line('w0')
+                              if i % 2 == 0
+                                let stopline = stoplinebottom
+                              else
+                                let stopline = stoplinetop
+                              endif
+                            
+                              " Limit the search time to 300 msec to avoid a hang on very long lines.
+                              " This fails when a timeout is not supported.
+                              if mode() == 'i' || mode() == 'R'
+                                let timeout = exists("b:matchparen_insert_timeout") ? b:matchparen_insert_timeout : g:matchparen_insert_timeout
+                              else
+                                let timeout = exists("b:matchparen_timeout") ? b:matchparen_timeout : g:matchparen_timeout
+                              endif
+                              try
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline, timeout)
+                              catch /E118/
+                                " Can't use the timeout, restrict the stopline a bit more to avoid taking
+                                " a long time on closed folds and long lines.
+                                " The "viewable" variables give a range in which we can scroll while
+                                " keeping the cursor at the same position.
+                                " adjustedScrolloff accounts for very large numbers of scrolloff.
+                                let adjustedScrolloff = min([&scrolloff, (line('w$') - line('w0')) / 2])
+                                let bottom_viewable = min([line('$'), c_lnum + &lines - adjustedScrolloff - 2])
+                                let top_viewable = max([1, c_lnum-&lines+adjustedScrolloff + 2])
+                                " one of these stoplines will be adjusted below, but the current values are
+                                " minimal boundaries within the current window
+                                if i % 2 == 0
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = min([line2byte("$"), line2byte(".") + col(".") + &smc * 2])
+                            	let stopline = min([bottom_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = min([bottom_viewable, c_lnum + 100])
+                                  endif
+                                  let stoplinebottom = stopline
+                                else
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = max([1, line2byte(".") + col(".") - &smc * 2])
+                            	let stopline = max([top_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = max([top_viewable, c_lnum - 100])
+                                  endif
+                                  let stoplinetop = stopline
+                                endif
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline)
+                              endtry
+                            
+                              if before > 0
+                                if has_getcurpos
+                                  call setpos('.', save_cursor)
+                                else
+                                  call winrestview(save_cursor)
+                                endif
+                              endif
+                            
+                              " If a match is found setup match highlighting.
+                              if m_lnum > 0 && m_lnum >= stoplinetop && m_lnum <= stoplinebottom 
+                                if exists('*matchaddpos')
+                                  call matchaddpos('MatchParen', [[c_lnum, c_col - before], [m_lnum, m_col]], 10, 3)
+                                else
+                                  exe '3match MatchParen /\(\%' . c_lnum . 'l\%' . (c_col - before) . 'c\)\|\(\%' . m_lnum . 'l\%' . m_col . 'c\)/'
+                                endif
+                                let w:paren_hl_on = 1
+                              endif
+
+FUNCTION  300()
+Called 14 times
+Total time:   0.000129
+ Self time:   0.000129
+
+count  total (s)   self (s)
+   14              0.000066     let idx = self.kinddict[a:kind]
+   14              0.000050     return self.kinds[idx]
+
+FUNCTION  308()
+Called 7 times
+Total time:   0.000041
+ Self time:   0.000041
+
+count  total (s)   self (s)
+    7              0.000018     if !s:paused || a:forcecurrent
+    7              0.000016         return self._current
+                                else
+                                    return self._paused
+                                endif
+
+FUNCTION  airline#extensions#tabline#buflist#list()
+Called 178 times
+Total time:   0.001496
+ Self time:   0.001496
+
+count  total (s)   self (s)
+  178              0.000886   if exists('s:current_buffer_list')
+  178              0.000430     return s:current_buffer_list
+                              endif
+                            
+                              let buffers = []
+                              let cur = bufnr('%')
+                              for nr in range(1, bufnr('$'))
+                                if buflisted(nr) && bufexists(nr)
+                                  let toadd = 1
+                                  for ex in s:excludes
+                                    if match(bufname(nr), ex) >= 0
+                                      let toadd = 0
+                                      break
+                                    endif
+                                  endfor
+                                  if getbufvar(nr, 'current_syntax') == 'qf'
+                                    let toadd = 0
+                                  endif
+                                  if s:exclude_preview && getbufvar(nr, '&bufhidden') == 'wipe' && getbufvar(nr, '&buftype') == 'nofile'
+                                    let toadd = 0
+                                  endif
+                                  if toadd
+                                    call add(buffers, nr)
+                                  endif
+                                endif
+                              endfor
+                            
+                              let s:current_buffer_list = buffers
+                              return buffers
+
+FUNCTION  <SNR>96_get_array()
+Called 11392 times
+Total time:   0.140472
+ Self time:   0.140472
+
+count  total (s)   self (s)
+11392              0.027603   let fg = a:fg
+11392              0.022853   let bg = a:bg
+11392              0.079382   return g:airline_gui_mode ==# 'gui' ? [ fg, bg, '', '', join(a:opts, ',') ] : [ '', '', fg, bg, join(a:opts, ',') ]
+
+FUNCTION  <SNR>104_AllowedToCompleteInCurrentFile()
+Called 77 times
+Total time:   0.002747
+ Self time:   0.002747
+
+count  total (s)   self (s)
+   77              0.000715   if empty( &filetype ) || getbufvar( winbufnr( winnr() ), "&buftype" ) ==# 'nofile' || &filetype ==# 'qf'
+                                return 0
+                              endif
+                            
+   77              0.000250   if exists( 'b:ycm_largefile' )
+                                return 0
+                              endif
+                            
+   77              0.000547   let whitelist_allows = has_key( g:ycm_filetype_whitelist, '*' ) || has_key( g:ycm_filetype_whitelist, &filetype )
+   77              0.000397   let blacklist_allows = !has_key( g:ycm_filetype_blacklist, &filetype )
+                            
+   77              0.000208   return whitelist_allows && blacklist_allows
+
+FUNCTION  <SNR>104_UpdateDiagnosticNotifications()
+Called 77 times
+Total time:   0.083391
+ Self time:   0.082988
+
+count  total (s)   self (s)
+   77   0.001066   0.000664   let should_display_diagnostics = g:ycm_show_diagnostics_ui && s:DiagnosticUiSupportedForCurrentFiletype()
+                            
+   77              0.000166   if !should_display_diagnostics
+                                py ycm_state.ValidateParseRequest()
+                                return
+                              endif
+                            
+   77              0.081687   py ycm_state.UpdateDiagnosticInterface()
+
+FUNCTION  airline#extensions#tabline#get_buffer_name()
+Called 178 times
+Total time:   0.023864
+ Self time:   0.002521
+
+count  total (s)   self (s)
+  178   0.023738   0.002395   return airline#extensions#tabline#formatters#{s:formatter}#format(a:nr, airline#extensions#tabline#buflist#list())
+
+FUNCTION  <SNR>104_DiagnosticUiSupportedForCurrentFiletype()
+Called 77 times
+Total time:   0.000403
+ Self time:   0.000403
+
+count  total (s)   self (s)
+   77              0.000351   return get( s:diagnostic_ui_filetypes, &filetype, 0 )
+
+FUNCTION  <SNR>93_map_keys()
+Called 89 times
+Total time:   0.013949
+ Self time:   0.013949
+
+count  total (s)   self (s)
+   89              0.002572   noremap <silent> <Plug>AirlineSelectTab1 :1tabn<CR>
+   89              0.001178   noremap <silent> <Plug>AirlineSelectTab2 :2tabn<CR>
+   89              0.001165   noremap <silent> <Plug>AirlineSelectTab3 :3tabn<CR>
+   89              0.001065   noremap <silent> <Plug>AirlineSelectTab4 :4tabn<CR>
+   89              0.001037   noremap <silent> <Plug>AirlineSelectTab5 :5tabn<CR>
+   89              0.001021   noremap <silent> <Plug>AirlineSelectTab6 :6tabn<CR>
+   89              0.001036   noremap <silent> <Plug>AirlineSelectTab7 :7tabn<CR>
+   89              0.001018   noremap <silent> <Plug>AirlineSelectTab8 :8tabn<CR>
+   89              0.001018   noremap <silent> <Plug>AirlineSelectTab9 :9tabn<CR>
+   89              0.000988   noremap <silent> <Plug>AirlineSelectPrevTab gT
+                              " tabn {count} goes to count tab does not go {count} tab pages forward!
+   89              0.001491   noremap <silent> <Plug>AirlineSelectNextTab :<C-U>exe repeat(':tabn\|', v:count1)<cr>
+
+FUNCTION  <SNR>107_Init()
+Called 7 times
+Total time:   0.000270
+ Self time:   0.000270
+
+count  total (s)   self (s)
+    7              0.000021     if s:checked_ctags == 2 && a:silent
+                                    return 0
+                                elseif s:checked_ctags != 1
+                                    if !s:CheckForExCtags(a:silent)
+                                        return 0
+                                    endif
+                                endif
+                            
+    7              0.000015     if !s:checked_ctags_types
+                                    call s:GetSupportedFiletypes()
+                                endif
+                            
+    7              0.000013     if !s:type_init_done
+                                    call s:InitTypes()
+                                endif
+                            
+    7              0.000013     if !s:autocommands_done
+                                    call s:CreateAutocommands()
+                                    call s:AutoUpdate(fnamemodify(expand('%'), ':p'), 0)
+                                endif
+                            
+    7              0.000008     return 1
+
+FUNCTION  <SNR>96_get_syn()
+Called 22784 times
+Total time:   0.812857
+ Self time:   0.812857
+
+count  total (s)   self (s)
+22784              0.079922   if !exists("g:airline_gui_mode")
+                                let g:airline_gui_mode = airline#init#gui_mode()
+                              endif
+22784              0.180877   let color = synIDattr(synIDtrans(hlID(a:group)), a:what, g:airline_gui_mode)
+22784              0.070146   if empty(color) || color == -1
+                                let color = synIDattr(synIDtrans(hlID('Normal')), a:what, g:airline_gui_mode)
+                              endif
+22784              0.058927   if empty(color) || color == -1
+                                if g:airline_gui_mode ==# 'gui'
+                                  let color = a:what ==# 'fg' ? '#000000' : '#FFFFFF'
+                                else
+                                  let color = a:what ==# 'fg' ? 0 : 1
+                                endif
+                              endif
+22784              0.033843   return color
+
+FUNCTION  <SNR>107_GetNearbyTag()
+Called 7 times
+Total time:   0.001933
+ Self time:   0.001763
+
+count  total (s)   self (s)
+    7              0.000016     if s:nearby_disabled
+                                    return {}
+                                endif
+                            
+    7   0.000100   0.000059     let fileinfo = s:known_files.getCurrent(a:forcecurrent)
+    7              0.000019     if empty(fileinfo)
+                                    return {}
+                                endif
+                            
+    7              0.000020     let typeinfo = fileinfo.typeinfo
+    7              0.000011     if a:0 > 0
+                                    let curline = a:1
+                                else
+    7              0.000024         let curline = line('.')
+    7              0.000007     endif
+    7              0.000016     let tag = {}
+                            
+                                " If a tag appears in a file more than once (for example namespaces in
+                                " C++) only one of them has a 'tline' entry and can thus be highlighted.
+                                " The only way to solve this would be to go over the whole tag list again,
+                                " making everything slower. Since this should be a rare occurence and
+                                " highlighting isn't /that/ important ignore it for now.
+   79              0.000159     for line in range(curline, 1, -1)
+   78              0.000297         if has_key(fileinfo.fline, line)
+   14              0.000063             let curtag = fileinfo.fline[line]
+   14   0.000244   0.000115             if a:all || typeinfo.getKind(curtag.fields.kind).stl
+    6              0.000015                 let tag = curtag
+    6              0.000007                 break
+                                        endif
+    8              0.000009         endif
+   72              0.000077     endfor
+                            
+    7              0.000011     return tag
+
+FUNCTION  airline#util#wrap()
+Called 890 times
+Total time:   0.006615
+ Self time:   0.006615
+
+count  total (s)   self (s)
+  890              0.002829   if a:minwidth > 0 && winwidth(0) < a:minwidth
+                                return ''
+                              endif
+  890              0.001355   return a:text
+
+FUNCTION  airline#extensions#tabline#get()
+Called 89 times
+Total time:   0.021600
+ Self time:   0.004514
+
+count  total (s)   self (s)
+   89              0.000868   let curtabcnt = tabpagenr('$')
+   89              0.000380   if curtabcnt != s:current_tabcnt
+                                let s:current_tabcnt = curtabcnt
+                                call airline#extensions#tabline#tabs#invalidate()
+                                call airline#extensions#tabline#buffers#invalidate()
+                              endif
+                            
+   89              0.000535   if !exists('#airline#BufAdd#*')
+                                autocmd airline BufAdd * call <sid>update_tabline()
+                              endif
+   89              0.000386   if s:show_buffers && curtabcnt == 1 || !s:show_tabs
+                                return airline#extensions#tabline#buffers#get()
+                              else
+   89   0.017615   0.000529     return airline#extensions#tabline#tabs#get()
+                              endif
+
+FUNCTION  airline#extensions#whitespace#check()
+Called 178 times
+Total time:   0.014185
+ Self time:   0.014185
+
+count  total (s)   self (s)
+  178              0.001147   if &readonly || !&modifiable || !s:enabled || line('$') > s:max_lines
+                                return ''
+                              endif
+                            
+  178              0.000736   if !exists('b:airline_whitespace_check')
+                                let b:airline_whitespace_check = ''
+                                let checks = get(g:, 'airline#extensions#whitespace#checks', s:default_checks)
+                            
+                                let trailing = 0
+                                if index(checks, 'trailing') > -1
+                                  try
+                                    let regexp = get(g:, 'airline#extensions#whitespace#trailing_regexp', '\s$')
+                                    let trailing = search(regexp, 'nw')
+                                  catch
+                                    echomsg 'airline#whitespace: error occured evaluating '. regexp
+                                    echomsg v:exception
+                                    return ''
+                                  endtry
+                                endif
+                            
+                                let mixed = 0
+                                if index(checks, 'indent') > -1
+                                  let mixed = s:check_mixed_indent()
+                                endif
+                            
+                                let long = 0
+                                if index(checks, 'long') > -1 && &tw > 0
+                                  let long = search('\%>'.&tw.'v.\+', 'nw')
+                                endif
+                            
+                                if trailing != 0 || mixed != 0 || long != 0
+                                  let b:airline_whitespace_check = s:symbol
+                                  if s:show_message
+                                    if trailing != 0
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:trailing_format, trailing)
+                                    endif
+                                    if mixed != 0
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:mixed_indent_format, mixed)
+                                    endif
+                                    if long != 0
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:long_format, long)
+                                    endif
+                                  endif
+                                endif
+                              endif
+  178              0.000425   return b:airline_whitespace_check
+
+FUNCTION  airline#extensions#tabline#title()
+Called 178 times
+Total time:   0.029298
+ Self time:   0.005434
+
+count  total (s)   self (s)
+  178              0.000576   let title = ''
+  178              0.000354   if s:taboo
+                                let title = TabooTabTitle(a:n)
+                              endif
+                            
+  178              0.000459   if empty(title)
+  178              0.000750     let buflist = tabpagebuflist(a:n)
+  178              0.000654     let winnr = tabpagewinnr(a:n)
+  178   0.025316   0.001452     return airline#extensions#tabline#get_buffer_name(buflist[winnr - 1])
+                              endif
+                            
+                              return title
+
+FUNCTION  provider#python#Call()
+Called 154 times
+Total time:   0.238177
+ Self time:   0.238177
+
+count  total (s)   self (s)
+  154              0.000605   if s:err != ''
+                                return
+                              endif
+  154              0.000607   if !exists('s:host')
+                                let s:rpcrequest = function('rpcrequest')
+                            
+                                " Ensure that we can load the Python host before bootstrapping
+                                try
+                                  let s:host = remote#host#Require('legacy-python-provider')
+                                catch
+                                  let s:err = v:exception
+                                  echohl WarningMsg
+                                  echomsg v:exception
+                                  echohl None
+                                  finish
+                                endtry
+                              endif
+  154              0.233138   return call(s:rpcrequest, insert(insert(a:args, 'python_'.a:method), s:host))
+
+FUNCTION  airline#extensions#tabline#formatters#default#wrap_name()
+Called 178 times
+Total time:   0.004835
+ Self time:   0.004835
+
+count  total (s)   self (s)
+  178              0.000959   let _ = s:buf_nr_show ? printf(s:buf_nr_format, a:bufnr) : ''
+  178              0.001449   let _ .= substitute(a:buffer_name, '\\', '/', 'g')
+                            
+  178              0.000945   if getbufvar(a:bufnr, '&modified') == 1
+   89              0.000358     let _ .= s:buf_modified_symbol
+   89              0.000104   endif
+  178              0.000308   return _
+
+FUNCTION  <SNR>104_SetUpYcmChangedTick()
+Called 77 times
+Total time:   0.000667
+ Self time:   0.000667
+
+count  total (s)   self (s)
+   77              0.000605   let b:ycm_changedtick  = get( b:, 'ycm_changedtick', {   'file_ready_to_parse' : -1, } )
+
+FUNCTION  <SNR>90_update()
+Called 77 times
+Total time:   0.002761
+ Self time:   0.002761
+
+count  total (s)   self (s)
+   77              0.001420   if match(&ft, s:filetypes) > -1
+                                if get(b:, 'airline_wordcount_cache', '') is# '' || b:airline_wordcount_cache isnot# get(b:, 'airline_wordcount', '') || get(b:, 'airline_change_tick', 0) != b:changedtick
+                                  " cache data
+                                  let b:airline_wordcount = airline#extensions#wordcount#formatters#{s:formatter}#format()
+                                  let b:airline_wordcount_cache = b:airline_wordcount
+                                  let b:airline_change_tick = b:changedtick
+                                endif
+                              endif
+
+FUNCTION  airline#highlighter#highlight()
+Called 178 times
+Total time:   4.198258
+ Self time:   1.246719
+
+count  total (s)   self (s)
+  178              0.000959   let p = g:airline#themes#{g:airline_theme}#palette
+                            
+                              " draw the base mode, followed by any overrides
+  178              0.003288   let mapped = map(a:modes, 'v:val == a:modes[0] ? v:val : a:modes[0]."_".v:val')
+  178              0.000798   let suffix = a:modes[0] == 'inactive' ? '_inactive' : ''
+  534              0.001191   for mode in mapped
+  356              0.002741     if exists('g:airline#themes#{g:airline_theme}#palette[mode]')
+  356              0.002013       let dict = g:airline#themes#{g:airline_theme}#palette[mode]
+ 8010              0.015671       for kvp in items(dict)
+ 7654              0.025588         let mode_colors = kvp[1]
+ 7654   0.388237   0.055362         call airline#highlighter#exec(kvp[0].suffix, mode_colors)
+                            
+22962              0.054064         for accent in keys(s:accents)
+15308              0.049484           if !has_key(p.accents, accent)
+                                        continue
+                                      endif
+15308              0.060273           let colors = copy(mode_colors)
+15308              0.055919           if p.accents[accent][0] != ''
+ 7654              0.032001             let colors[0] = p.accents[accent][0]
+ 7654              0.008166           endif
+15308              0.044885           if p.accents[accent][2] != ''
+ 7654              0.029230             let colors[2] = p.accents[accent][2]
+ 7654              0.007884           endif
+15308              0.034185           if len(colors) >= 5
+ 2492              0.012003             let colors[4] = get(p.accents[accent], 4, '')
+ 2492              0.002767           else
+12816              0.084644             call add(colors, get(p.accents[accent], 4, ''))
+12816              0.014538           endif
+15308   0.832136   0.124175           call airline#highlighter#exec(kvp[0].suffix.'_'.accent, colors)
+15308              0.019178         endfor
+ 7654              0.007449       endfor
+                            
+                                  " TODO: optimize this
+ 6052              0.012847       for sep in items(s:separators)
+ 5696   1.972358   0.061654         call <sid>exec_separator(dict, sep[1][0], sep[1][1], sep[1][2], suffix)
+ 5696              0.007308       endfor
+  356              0.000329     endif
+  356              0.000339   endfor
+
+FUNCTION  airline#parts#ffenc()
+Called 178 times
+Total time:   0.002660
+ Self time:   0.002660
+
+count  total (s)   self (s)
+  178              0.002542   return printf('%s%s%s', &fenc, &l:bomb ? '[BOM]' : '', strlen(&ff) > 0 ? '['.&ff.']' : '')
+
+FUNCTION  tagbar#currenttag()
+Called 7 times
+Total time:   0.002900
+ Self time:   0.000527
+
+count  total (s)   self (s)
+                                " Indicate that the statusline functionality is being used. This prevents
+                                " the CloseWindow() function from removing the autocommands.
+    7              0.000025     let s:statusline_in_use = 1
+                            
+    7              0.000013     if a:0 > 0
+                                    " also test for non-zero value for backwards compatibility
+    7              0.000117         let longsig   = a:1 =~# 's' || (type(a:1) == type(0) && a:1 != 0)
+    7              0.000033         let fullpath  = a:1 =~# 'f'
+    7              0.000027         let prototype = a:1 =~# 'p'
+    7              0.000009     else
+                                    let longsig   = 0
+                                    let fullpath  = 0
+                                    let prototype = 0
+                                endif
+                            
+    7   0.000312   0.000041     if !s:Init(1)
+                                    return a:default
+                                endif
+                            
+    7   0.001983   0.000050     let tag = s:GetNearbyTag(0, 1)
+                            
+    7              0.000017     if !empty(tag)
+    6              0.000009         if prototype
+                                        return tag.getPrototype(1)
+                                    else
+    6   0.000223   0.000053             return printf(a:fmt, tag.str(longsig, fullpath))
+                                    endif
+                                else
+    1              0.000002         return a:default
+                                endif
+
+FUNCTION  airline#extensions#tabline#tabs#get()
+Called 89 times
+Total time:   0.017086
+ Self time:   0.003137
+
+count  total (s)   self (s)
+   89              0.000455   let curbuf = bufnr('%')
+   89              0.000300   let curtab = tabpagenr()
+   89   0.014549   0.000600   call s:map_keys()
+   89              0.000463   if curbuf == s:current_bufnr && curtab == s:current_tabnr
+   89              0.000747     if !g:airline_detect_modified || getbufvar(curbuf, '&modified') == s:current_modified
+   89              0.000340       return s:current_tabline
+                                endif
+                              endif
+                            
+                              let b = airline#extensions#tabline#new_builder()
+                              for i in range(1, tabpagenr('$'))
+                                if i == curtab
+                                  let group = 'airline_tabsel'
+                                  if g:airline_detect_modified
+                                    for bi in tabpagebuflist(i)
+                                      if getbufvar(bi, '&modified')
+                                        let group = 'airline_tabmod'
+                                      endif
+                                    endfor
+                                  endif
+                                  let s:current_modified = (group == 'airline_tabmod') ? 1 : 0
+                                else
+                                  let group = 'airline_tab'
+                                endif
+                                let val = '%('
+                                if s:show_tab_nr
+                                  if s:tab_nr_type == 0
+                                    let val .= (g:airline_symbols.space).'%{len(tabpagebuflist('.i.'))}'
+                                  elseif s:tab_nr_type == 1
+                                    let val .= (g:airline_symbols.space).i
+                                  else "== 2
+                                    let val .= (g:airline_symbols.space).i.'.%{len(tabpagebuflist('.i.'))}'
+                                  endif
+                                endif
+                                call b.add_section(group, val.'%'.i.'T %{airline#extensions#tabline#title('.i.')} %)')
+                              endfor
+                            
+                              call b.add_raw('%T')
+                              call b.add_section('airline_tabfill', '')
+                              call b.split()
+                              if s:show_close_button
+                                call b.add_section('airline_tab', ' %999X'.s:close_symbol.' ')
+                              endif
+                              if s:show_tab_type
+                                call b.add_section('airline_tabtype', ' tabs ')
+                              endif
+                            
+                              let s:current_bufnr = curbuf
+                              let s:current_tabnr = curtab
+                              let s:current_tabline = b.build()
+                              return s:current_tabline
+
+FUNCTION  airline#parts#paste()
+Called 178 times
+Total time:   0.000868
+ Self time:   0.000868
+
+count  total (s)   self (s)
+  178              0.000740   return g:airline_detect_paste && &paste ? g:airline_symbols.paste : ''
+
+FUNCTION  airline#parts#readonly()
+Called 178 times
+Total time:   0.000720
+ Self time:   0.000720
+
+count  total (s)   self (s)
+  178              0.000604   return &readonly ? g:airline_symbols.readonly : ''
+
+FUNCTION  airline#highlighter#exec()
+Called 28836 times
+Total time:   1.295200
+ Self time:   1.295200
+
+count  total (s)   self (s)
+28836              0.077035   let colors = a:colors
+28836              0.047391   if s:is_win32term
+                                let colors[2] = s:gui2cui(get(colors, 0, ''), get(colors, 2, ''))
+                                let colors[3] = s:gui2cui(get(colors, 1, ''), get(colors, 3, ''))
+                              endif
+28836              0.853052   exec printf('hi %s %s %s %s %s %s %s %s', a:group, get(colors, 0, '') isnot# '' ? 'guifg='.colors[0] : '', get(colors, 1, '') isnot# '' ? 'guibg='.colors[1] : '', get(colors, 2, '') isnot# '' ? 'ctermfg='.colors[2] : '', get(colors, 3, '') isnot# '' ? 'ctermbg='.colors[3] : '', get(colors, 4, '') isnot# '' ? 'gui='.colors[4] : '', get(colors, 4, '') isnot# '' ? 'cterm='.colors[4] : '', get(colors, 4, '') isnot# '' ? 'term='.colors[4] : '')
+
+FUNCTION  airline#extensions#tabline#formatters#default#format()
+Called 178 times
+Total time:   0.019847
+ Self time:   0.015012
+
+count  total (s)   self (s)
+  178              0.000475   let _ = ''
+                            
+  178              0.000764   let name = bufname(a:bufnr)
+  178              0.000488   if empty(name)
+                                let _ .= '[No Name]'
+                              else
+  178              0.000339     if s:fnamecollapse
+  178              0.006863       let _ .= substitute(fnamemodify(name, s:fmod), '\v\w\zs.{-}\ze(\\|/)', '', 'g')
+  178              0.000325     else
+                                  let _ .= fnamemodify(name, s:fmod)
+                                endif
+  178              0.001065     if a:bufnr != bufnr('%') && s:fnametruncate && strlen(_) > s:fnametruncate
+                                  let _ = strpart(_, 0, s:fnametruncate)
+                                endif
+  178              0.000210   endif
+                            
+  178   0.006521   0.001686   return airline#extensions#tabline#formatters#default#wrap_name(a:bufnr, _)
+
+FUNCTION  airline#extensions#tagbar#currenttag()
+Called 178 times
+Total time:   0.006388
+ Self time:   0.003488
+
+count  total (s)   self (s)
+  178              0.000655   if get(w:, 'airline_active', 0)
+  178              0.000786     if s:airline_tagbar_last_lookup_time != localtime()
+    7   0.002970   0.000069       let s:airline_tagbar_last_lookup_val = tagbar#currenttag('%s', '', s:flags)
+    7              0.000031       let s:airline_tagbar_last_lookup_time = localtime()
+    7              0.000007     endif
+  178              0.000468     return s:airline_tagbar_last_lookup_val
+                              endif
+                              return ''
+
+FUNCTION  airline#parts#crypt()
+Called 178 times
+Total time:   0.002308
+ Self time:   0.002308
+
+count  total (s)   self (s)
+  178              0.002155   return g:airline_detect_crypt && exists("+key") && !empty(&key) ? g:airline_symbols.crypt : ''
+
+FUNCTION  airline#parts#mode()
+Called 178 times
+Total time:   0.000869
+ Self time:   0.000869
+
+count  total (s)   self (s)
+  178              0.000726   return get(w:, 'airline_current_mode', '')
+
+FUNCTION  <SNR>84_sync_active_winnr()
+Called 77 times
+Total time:   0.000913
+ Self time:   0.000913
+
+count  total (s)   self (s)
+   77              0.000528   if exists('#airline') && winnr() != s:active_winnr
+                                call airline#update_statusline()
+                              endif
+
+FUNCTION  airline#statusline()
+Called 178 times
+Total time:   0.003919
+ Self time:   0.003919
+
+count  total (s)   self (s)
+  178              0.001645   if has_key(s:contexts, a:winnr)
+  178              0.001870     return '%{airline#check_mode('.a:winnr.')}'.s:contexts[a:winnr].line
+                              endif
+                            
+                              " in rare circumstances this happens...see #276
+                              return ''
+
+FUNCTION  airline#highlighter#get_highlight()
+Called 11392 times
+Total time:   1.346711
+ Self time:   0.393382
+
+count  total (s)   self (s)
+11392   0.480963   0.066526   let fg = s:get_syn(a:group, 'fg')
+11392   0.463890   0.065470   let bg = s:get_syn(a:group, 'bg')
+11392              0.160519   let reverse = g:airline_gui_mode ==# 'gui' ? synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'gui') : synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'cterm')|| synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'term')
+11392   0.227836   0.087364   return reverse ? s:get_array(bg, fg, a:000) : s:get_array(fg, bg, a:000)
+
+FUNCTION  airline#highlighter#highlight_modified_inactive()
+Called 178 times
+Total time:   0.016453
+ Self time:   0.007266
+
+count  total (s)   self (s)
+  178              0.000886   if getbufvar(a:bufnr, '&modified')
+  178              0.002430     let colors = exists('g:airline#themes#{g:airline_theme}#palette.inactive_modified.airline_c') ? g:airline#themes#{g:airline_theme}#palette.inactive_modified.airline_c : []
+  178              0.000210   else
+                                let colors = exists('g:airline#themes#{g:airline_theme}#palette.inactive.airline_c') ? g:airline#themes#{g:airline_theme}#palette.inactive.airline_c : []
+                              endif
+                            
+  178              0.000438   if !empty(colors)
+  178   0.010761   0.001574     call airline#highlighter#exec('airline_c'.(a:bufnr).'_inactive', colors)
+  178              0.000196   endif
+
+FUNCTION  288()
+Called 6 times
+Total time:   0.000170
+ Self time:   0.000170
+
+count  total (s)   self (s)
+    6              0.000016     if a:full && self.path != ''
+                                    let str = self.path . self.typeinfo.sro . self.name
+                                else
+    6              0.000016         let str = self.name
+    6              0.000006     endif
+                            
+    6              0.000020     if has_key(self.fields, 'signature')
+    6              0.000010         if a:longsig
+    6              0.000023             let str .= self.fields.signature
+    6              0.000006         else
+                                        let str .= '()'
+                                    endif
+    6              0.000005     endif
+                            
+    6              0.000010     return str
+
+FUNCTION  airline#util#prepend()
+Called 178 times
+Total time:   0.001989
+ Self time:   0.001989
+
+count  total (s)   self (s)
+  178              0.000539   if a:minwidth > 0 && winwidth(0) < a:minwidth
+                                return ''
+                              endif
+  178              0.000950   return empty(a:text) ? '' : a:text.s:spc.g:airline_right_alt_sep.s:spc
+
+FUNCTIONS SORTED ON TOTAL TIME
+count  total (s)   self (s)  function
+  178   4.241792   0.027081  airline#check_mode()
+  178   4.198258   1.246719  airline#highlighter#highlight()
+ 5696   1.910703   0.234796  <SNR>96_exec_separator()
+11392   1.430731   0.084020  airline#themes#get_highlight()
+11392   1.346711   0.393382  airline#highlighter#get_highlight()
+28836   1.295200             airline#highlighter#exec()
+22784   0.812857             <SNR>96_get_syn()
+   77   0.251383   0.159780  <SNR>104_OnCursorMovedNormalMode()
+  154   0.238177             provider#python#Call()
+11392   0.140472             <SNR>96_get_array()
+   77   0.088856   0.004798  <SNR>104_OnFileReadyToParse()
+   77   0.083391   0.082988  <SNR>104_UpdateDiagnosticNotifications()
+  178   0.029298   0.005434  airline#extensions#tabline#title()
+  178   0.023864   0.002521  airline#extensions#tabline#get_buffer_name()
+   89   0.021600   0.004514  airline#extensions#tabline#get()
+  178   0.019847   0.015012  airline#extensions#tabline#formatters#default#format()
+   89   0.017086   0.003137  airline#extensions#tabline#tabs#get()
+  178   0.016453   0.007266  airline#highlighter#highlight_modified_inactive()
+  178   0.014185             airline#extensions#whitespace#check()
+   89   0.013949             <SNR>93_map_keys()
+
+FUNCTIONS SORTED ON SELF TIME
+count  total (s)   self (s)  function
+28836              1.295200  airline#highlighter#exec()
+  178   4.198258   1.246719  airline#highlighter#highlight()
+22784              0.812857  <SNR>96_get_syn()
+11392   1.346711   0.393382  airline#highlighter#get_highlight()
+  154              0.238177  provider#python#Call()
+ 5696   1.910703   0.234796  <SNR>96_exec_separator()
+   77   0.251383   0.159780  <SNR>104_OnCursorMovedNormalMode()
+11392              0.140472  <SNR>96_get_array()
+11392   1.430731   0.084020  airline#themes#get_highlight()
+   77   0.083391   0.082988  <SNR>104_UpdateDiagnosticNotifications()
+  178   4.241792   0.027081  airline#check_mode()
+  178   0.019847   0.015012  airline#extensions#tabline#formatters#default#format()
+  178              0.014185  airline#extensions#whitespace#check()
+   89              0.013949  <SNR>93_map_keys()
+  712              0.010401  airline#util#append()
+  178   0.016453   0.007266  airline#highlighter#highlight_modified_inactive()
+   77              0.006789  <SNR>63_Highlight_Matching_Pair()
+  890              0.006615  airline#util#wrap()
+  178   0.029298   0.005434  airline#extensions#tabline#title()
+  178              0.004835  airline#extensions#tabline#formatters#default#wrap_name()
+
