@@ -6,7 +6,7 @@
 
 namespace ex = entityx;
 
-void RenderSystem::update(ex::EntityManager &es, ex::EventManager &events,
+void LoveShips::RenderSystem::update(ex::EntityManager &es, ex::EventManager &events,
                           ex::TimeDelta dt) {
     es.each<Body, Renderable>(
         [this](ex::Entity entity, Body &body, Renderable &renderable) {
@@ -17,7 +17,7 @@ void RenderSystem::update(ex::EntityManager &es, ex::EventManager &events,
     drawFPS(es, dt);
 }
 
-void RenderSystem::drawFPS(ex::EntityManager &es, const ex::TimeDelta &dt) {
+void LoveShips::RenderSystem::drawFPS(ex::EntityManager &es, const ex::TimeDelta &dt) {
     last_update += dt;
     frame_count++;
     if (last_update >= 0.5) {

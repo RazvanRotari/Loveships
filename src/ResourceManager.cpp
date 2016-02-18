@@ -2,7 +2,10 @@
 
 #include <boost/filesystem.hpp>
 
+
+namespace LoveShips {
 extern const std::string defaultFontName = "LiberationSans-Regular.ttf";
+
 sf::Font& ResourceManager::getDefaultFont() { return defaultFont; }
 
 sf::Font& ResourceManager::getFontByName(const std::string& name) {
@@ -32,4 +35,5 @@ T& ResourceManager::getResourceByNameFrom(const std::string& name,
         cache[name] = resource;
     }
     return cache[name];
+}
 }

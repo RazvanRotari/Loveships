@@ -1,19 +1,21 @@
 #pragma once
 
 #include <memory>
-#include <SFML/Graphics.hpp>
+
 #include <entityx/entityx.h>
+#include "LoveTypes.hpp"
+
+namespace LoveShips {
 
 struct Renderable {
-    explicit Renderable(sf::Sprite& sprite)
-        : sprite(sprite) {}
+    explicit Renderable(Sprite &sprite) : sprite(sprite) {}
 
     sf::Sprite sprite;
 };
 
 class RenderSystem : public entityx::System<RenderSystem> {
 public:
-    explicit RenderSystem(sf::RenderTarget &target, sf::Font &font)
+    explicit RenderSystem(sf::RenderTarget &target, Font &font)
         : target(target) {
         text.setFont(font);
         text.setPosition(sf::Vector2f(2, 2));
@@ -32,3 +34,4 @@ private:
     sf::RenderTarget &target;
     sf::Text text;
 };
+}
