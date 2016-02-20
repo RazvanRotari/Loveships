@@ -11,9 +11,8 @@
 
 #include "GameScreen.hpp"
 #include "LoveTypes.hpp"
-#include "RenderSystem.hpp"
 #include "ResourceManager.hpp"
-#include "BasicComponents.hpp"
+#include "Game.hpp"
 
 using std::cerr;
 using std::cout;
@@ -24,27 +23,8 @@ namespace ex = entityx;
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "LoveShips");
     LoveShips::ResourceManager resourceManager;
-    LoveShips::Font& font = resourceManager.getDefaultFont();
+    LoveShips::Game game = LoveShips::Game::newGame(LoveShips::WorldSize::Medium);
+    LoveShips::GameScreen app(window, resourceManager, game);
+    app.run();
 
-    LoveShips::GameScreen app(window, resourceManager);
-
-    sf::Clock clock;
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            switch (event.type) {
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        window.clear();
-        sf::Time elapsed = clock.restart();
-        app.update(elapsed.asSeconds());
-        window.display();
-    }
 }

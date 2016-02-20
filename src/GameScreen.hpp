@@ -6,18 +6,31 @@
 #include "LoveTypes.hpp"
 #include "ResourceManager.hpp"
 #include "RenderSystem.hpp"
+#include "Game.hpp"
+#include "BasicComponents.hpp"
 
 namespace LoveShips {
 
-namespace ex = entityx
+namespace ex = entityx;
 
 class GameScreen : public ex::EntityX {
 public:
-    explicit GameScreen(sf::RenderTarget& target,
-                         ResourceManager& resourceManager);
-    
+    explicit GameScreen(sf::RenderWindow& target,
+                        ResourceManager& resourceManager, Game& game)
+        : _renderTarget(target),
+          _resourceManager(resourceManager),
+          _game(game) {
 
-    void update(ex::TimeDelta dt); 
+        systems.add<RenderSystem>(target, resourceManager.getDefaultFont());
+        systems.configure();
+        _game.addEntities(entities, _resourceManager);
+    }
+
+    void run();
+
+private:
+    sf::RenderWindow& _renderTarget;
+    ResourceManager& _resourceManager;
+    Game _game;
 };
-
 }

@@ -12,6 +12,7 @@ World WorldFactory::generateWorld() {
     for (size_t i = 0; i < numberOfSystems; i++) {
         world.solarSystems.push_back(generateSolarSystem(world));
     }
+    return world;
 }
 
 
@@ -21,10 +22,10 @@ SolarSystem WorldFactory::generateSolarSystem(World& world) {
     solarSystem.sun.radius = randomInt(20, 80);
     solarSystem.planets = generatePlanetsForSolorSystem(solarSystem);
 
-    solarSystem.center = generateRandomPositionForSolarSystem(solarSystem, world);
+    solarSystem.position = generateRandomPositionForSolarSystem(solarSystem, world);
     for (auto planet:solarSystem.planets) {
-        float x = solarSystem.center.x + planet.position.x;
-        float y = solarSystem.center.y + planet.position.y;
+        float x = solarSystem.position.x + planet.position.x;
+        float y = solarSystem.position.y + planet.position.y;
         planet.position = {x, y};
     }
 
@@ -60,7 +61,7 @@ Point WorldFactory::generateRandomPositionForSolarSystem(
 
         // Verify other SolarSystems positions
         for (auto solarSystem:world.solarSystems) {
-            float distance = center.distanceTo(solarSystem.center);
+            float distance = center.distanceTo(solarSystem.position);
             if (distance <= (solarSystem.systemRadius + solarSystem.systemRadius)) {
                 ok = false;
                 break;

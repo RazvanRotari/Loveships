@@ -2,6 +2,7 @@
 #include "BasicComponents.hpp"
 
 #include <sstream>
+#include <iostream>
 
 
 namespace ex = entityx;

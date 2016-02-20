@@ -7,11 +7,6 @@
 
 namespace LoveShips {
 
-struct Renderable {
-    explicit Renderable(Sprite &sprite) : sprite(sprite) {}
-
-    sf::Sprite sprite;
-};
 
 class RenderSystem : public entityx::System<RenderSystem> {
 public:
