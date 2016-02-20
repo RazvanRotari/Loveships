@@ -1,7 +1,5 @@
 #include "ResourceManager.hpp"
 
-#include <boost/filesystem.hpp>
-
 
 namespace LoveShips {
 extern const std::string defaultFontName = "LiberationSans-Regular.ttf";
