@@ -16,6 +16,7 @@ project "LoveShips"
    links {"entityx", "sfml-system", "sfml-window", "sfml-graphics", "sfml-audio", "boost_system", "boost_filesystem"}
 
    buildoptions {"-std=c++14"}
+   warnings "Extra"
 
    filter "configurations:Debug"
    --  ugly hack to use clang

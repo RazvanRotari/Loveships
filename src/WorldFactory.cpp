@@ -2,12 +2,14 @@
 #include "WorldFactory.hpp"
 #include "World.hpp"
 
+#include <iostream>
+
 namespace LoveShips {
 
 World WorldFactory::generateWorld() {
     size_t numberOfSystems = numberOfSolorSystemsForSize(_worldSize);
     World world;
-
+    world.size = sizeForWorldSize(_worldSize);
     world.solarSystems.reserve(numberOfSystems);
     for (size_t i = 0; i < numberOfSystems; i++) {
         world.solarSystems.push_back(generateSolarSystem(world));
@@ -38,6 +40,7 @@ Point WorldFactory::generateRandomPositionForSolarSystem(
     Size size = sizeForWorldSize(_worldSize);
     float l = size.width;
     float L = size.height;
+    std::cout << "Width: " << l << " height: " << L << std::endl;
 
     bool ok;
     do {
@@ -68,6 +71,7 @@ Point WorldFactory::generateRandomPositionForSolarSystem(
             }
         }
     } while (!ok);
+    std::cout << "x: " << center.x << " y: " << center.y << std::endl;
     return center;
 }
 std::vector<Planet> WorldFactory::generatePlanetsForSolorSystem(

@@ -23,4 +23,24 @@ struct Renderable {
 
     sf::Sprite sprite;
 };
+
+struct Camera {
+    explicit Camera(const Vector2f &center, const Vector2f &size)
+        : center(center), size(size) {}
+    sf::Vector2f center;
+    sf::Vector2f size;
+};
+
+// Events
+struct KeyPress {
+    explicit KeyPress(sf::Keyboard::Key key) : key(key) {}
+    sf::Keyboard::Key key;
+};
+
+struct CameraMoveEvent {
+    explicit CameraMoveEvent(float x = 0, float y = 0)
+        : x(x), y(y){}
+    float x;
+    float y;
+};
 }

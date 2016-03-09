@@ -23,7 +23,7 @@ namespace ex = entityx;
 int main() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "LoveShips");
     LoveShips::ResourceManager resourceManager;
-    LoveShips::Game game = LoveShips::Game::newGame(LoveShips::WorldSize::Medium);
+    LoveShips::Game game = LoveShips::Game::newGame(LoveShips::WorldSize::Huge);
     LoveShips::GameScreen app(window, resourceManager, game);
     app.run();
 

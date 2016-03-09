@@ -43,7 +43,6 @@ struct SolarSystem : public SpaceObject {
     Sun sun;
     std::vector<Planet> planets;
     float systemRadius;
-    Point center = {0,0};
 };
 
 
